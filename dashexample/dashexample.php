@@ -60,6 +60,7 @@ class DashExample extends Module
                 'displayAdminDashboardZoneTwo',
                 'displayAdminDashboardZoneThree',
                 'displayAdminDashboardTop',
+                'displayAdminDashboardBottom',
                 'displayAdminDashboardToolbar',
             ]);
     }
@@ -106,6 +107,18 @@ class DashExample extends Module
     public function hookDisplayAdminDashboardTop(array $params): string
     {
         return $this->render('top.html.twig', [
+            'dateFrom' => $params['date_from'] ?? null,
+            'dateTo' => $params['date_to'] ?? null,
+        ]);
+    }
+
+    /**
+     * Renders a full-width block at the bottom of the Symfony dashboard.
+     * Receives the employee date range selected on the page.
+     */
+    public function hookDisplayAdminDashboardBottom(array $params): string
+    {
+        return $this->render('bottom.html.twig', [
             'dateFrom' => $params['date_from'] ?? null,
             'dateTo' => $params['date_to'] ?? null,
         ]);
