@@ -1,0 +1,19 @@
+{
+  "name": "prestashop/demoentityimporter",
+  "description": "PrestaShop example module: register a custom entity importer into the core import engine",
+  "license": "AFL-3.0",
+  "authors": [
+    {
+      "name": "PrestaShop Core team"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "PrestaShop\\Module\\DemoEntityImporter\\": "src/"
+    }
+  },
+  "config": {
+    "prepend-autoloader": false
+  },
+  "type": "prestashop-module"
+}
