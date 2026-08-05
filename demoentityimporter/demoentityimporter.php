@@ -36,6 +36,37 @@ class DemoEntityImporter extends Module
         parent::__construct();
 
         $this->displayName = $this->trans('Demo - register a custom entity importer', [], 'Modules.Demoentityimporter.Admin');
-        $this->description = $this->trans('Shows how a module registers its own importer into the core import engine.', [], 'Modules.Demoentityimporter.Admin');
+        $this->description = $this->trans('Shows how a module registers its own importer into the core import engine and persists a Doctrine entity.', [], 'Modules.Demoentityimporter.Admin');
+    }
+
+    public function install(): bool
+    {
+        return parent::install() && $this->installDatabase();
+    }
+
+    public function uninstall(): bool
+    {
+        return parent::uninstall() && $this->uninstallDatabase();
+    }
+
+    /**
+     * Creates the table backing the DemoNote Doctrine entity
+     * (src/Entity/DemoNote.php).
+     */
+    private function installDatabase(): bool
+    {
+        return Db::getInstance()->execute('
+            CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'demo_note` (
+                `id_demo_note` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `note` VARCHAR(255) NOT NULL,
+                `date_add` DATETIME NOT NULL,
+                PRIMARY KEY (`id_demo_note`)
+            ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8mb4;
+        ');
+    }
+
+    private function uninstallDatabase(): bool
+    {
+        return Db::getInstance()->execute('DROP TABLE IF EXISTS `' . _DB_PREFIX_ . 'demo_note`');
     }
 }
