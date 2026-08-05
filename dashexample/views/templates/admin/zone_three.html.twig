@@ -8,15 +8,31 @@
 
 {% trans_default_domain 'Module.Dashexample.Admin' %}
 
-<div class="panel dashexample-card">
-  <h3 class="panel-heading">
-    <span class="material-icons">bookmark</span>
-    {{ 'Zone three'|trans }}
-  </h3>
-  <div class="panel-body">
-    <p>{{ 'This block is rendered by the dashexample module through the displayAdminDashboardZoneThree hook.'|trans }}</p>
-    <p class="text-muted mb-0">
-      {{ 'Selected range: %from% → %to%'|trans({'%from%': dateFrom, '%to%': dateTo}) }}
+{# Every hook template loads the assets its own blocks need, so each hook keeps
+   working when the others are unregistered. #}
+<link rel="stylesheet" href="{{ moduleUri }}views/css/dashexample.css">
+<script src="{{ moduleUri }}views/js/zone-three.js" defer></script>
+
+<div class="card dashexample-card">
+  <div class="card-header">
+    <h3 class="card-header-title">
+      <i class="material-icons">data_usage</i>
+      {{ 'Orders by status'|trans }}
+    </h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted">
+      {{ 'Polar area chart — like the doughnut, no colors set, each data point picks the next palette color.'|trans }}
     </p>
+    <canvas id="dashexample-polar" height="220" role="img" aria-label="{{ 'Orders by status breakdown'|trans }}"></canvas>
+    <script type="application/json" id="dashexample-polar-data">
+      {
+        "labels": ["New", "Processing", "Shipped", "Delivered"],
+        "values": [14, 9, 12, 18]
+      }
+    </script>
+  </div>
+  <div class="card-footer text-muted">
+    {{ 'Selected range: %from% → %to%'|trans({'%from%': dateFrom, '%to%': dateTo}) }}
   </div>
 </div>

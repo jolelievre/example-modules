@@ -34,6 +34,13 @@ if (!defined('_PS_VERSION_')) {
  * architecture it is integrating with purely from which hook is called — no version detection,
  * no `get_class($controller)` check, no Smarty, no `HelperForm`, no `Db::getInstance()`.
  *
+ * Charts are rendered with the Chart.js library provided by the core: the dashboard page loads
+ * `chartjs.bundle.js`, which exposes the global `Chart` plus a `psChart` palette based on the
+ * PrestaShop design tokens — the module ships no charting library of its own.
+ *
+ * Each hook template loads the assets its own blocks need: hooks can be registered or
+ * unregistered independently, so no hook may depend on assets loaded by another one.
+ *
  * See README.md for how to stay compatible with the legacy dashboard at the same time.
  */
 class DashExample extends Module
@@ -49,7 +56,7 @@ class DashExample extends Module
         parent::__construct();
 
         $this->displayName = $this->l('Dashboard example');
-        $this->description = $this->l('Demonstration of the new dedicated hooks of the migrated Symfony dashboard page.');
+        $this->description = $this->l('Demonstration of the new dedicated hooks of the migrated Symfony dashboard page, with charts rendered by the core-provided Chart.js.');
     }
 
     public function install(): bool
@@ -68,35 +75,47 @@ class DashExample extends Module
     /**
      * Renders a block in the first (left) column of the Symfony dashboard.
      * Receives the employee date range selected on the page.
+     *
+     * Doughnut chart (traffic sources) with no colors of its own: the core palette
+     * plugin colors it automatically.
      */
     public function hookDisplayAdminDashboardZoneOne(array $params): string
     {
         return $this->render('zone_one.html.twig', [
             'dateFrom' => $params['date_from'] ?? null,
             'dateTo' => $params['date_to'] ?? null,
+            'moduleUri' => $this->getPathUri(),
         ]);
     }
 
     /**
      * Renders a block in the second (center) column of the Symfony dashboard.
+     *
+     * Line chart with a previous-period overlay, and a goals-vs-actual bar chart,
+     * both using explicit colors picked from the core `psChart` palette.
      */
     public function hookDisplayAdminDashboardZoneTwo(array $params): string
     {
         return $this->render('zone_two.html.twig', [
             'dateFrom' => $params['date_from'] ?? null,
             'dateTo' => $params['date_to'] ?? null,
+            'moduleUri' => $this->getPathUri(),
         ]);
     }
 
     /**
      * Renders a block in the third (right) column of the Symfony dashboard.
      * Receives the employee date range selected on the page.
+     *
+     * Polar area chart (orders by status) with no colors of its own: the core
+     * palette plugin colors it automatically, per data point like a doughnut.
      */
     public function hookDisplayAdminDashboardZoneThree(array $params): string
     {
         return $this->render('zone_three.html.twig', [
             'dateFrom' => $params['date_from'] ?? null,
             'dateTo' => $params['date_to'] ?? null,
+            'moduleUri' => $this->getPathUri(),
         ]);
     }
 
@@ -127,8 +146,9 @@ class DashExample extends Module
     /**
      * Renders content in the toolbar area of the Symfony dashboard.
      *
-     * This hook is rendered once at the top of the page, so the module loads its own
-     * assets from here (via its hook output) instead of `actionAdminControllerSetMedia`.
+     * Like every other hook of this module, it only loads the assets its own block
+     * needs (via its hook output, not `actionAdminControllerSetMedia`), so the zones
+     * keep working if this hook is unregistered.
      */
     public function hookDisplayAdminDashboardToolbar(array $params): string
     {

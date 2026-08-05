@@ -9,9 +9,9 @@
 {% trans_default_domain 'Module.Dashexample.Admin' %}
 
 {# The module loads its own assets from its hook output — no actionAdminControllerSetMedia,
-   no get_class($controller) detection. #}
+   no get_class($controller) detection. Each hook template only loads what its own
+   blocks need (here the badge styling), so the hooks stay independent. #}
 <link rel="stylesheet" href="{{ moduleUri }}views/css/dashexample.css">
-<script src="{{ moduleUri }}views/js/dashexample.js" defer></script>
 
 <div class="dashexample-toolbar">
   <span class="material-icons">extension</span>
