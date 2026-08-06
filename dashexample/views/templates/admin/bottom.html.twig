@@ -8,15 +8,17 @@
 
 {% trans_default_domain 'Module.Dashexample.Admin' %}
 
-<div class="panel dashexample-card">
-  <h3 class="panel-heading">
-    <span class="material-icons">view_stream</span>
-    {{ 'Full-width bottom zone'|trans }}
-  </h3>
-  <div class="panel-body">
-    <p>{{ 'This full-width block is rendered by the dashexample module through the displayAdminDashboardBottom hook.'|trans }}</p>
-    <p class="text-muted mb-0">
-      {{ 'Selected range: %from% → %to%'|trans({'%from%': dateFrom, '%to%': dateTo}) }}
-    </p>
+<div class="card dashexample-card">
+  <div class="card-header">
+    <h3 class="card-header-title">
+      <i class="material-icons">view_stream</i>
+      {{ 'Full-width bottom zone'|trans }}
+    </h3>
+  </div>
+  <div class="card-body">
+    <p class="mb-0">{{ 'This full-width block is rendered by the dashexample module through the displayAdminDashboardBottom hook.'|trans }}</p>
+  </div>
+  <div class="card-footer text-muted">
+    {{ 'Selected range: %from% → %to%'|trans({'%from%': dateFrom, '%to%': dateTo}) }}
   </div>
 </div>

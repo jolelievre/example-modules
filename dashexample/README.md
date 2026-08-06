@@ -2,19 +2,21 @@
 
 Demonstration module for the **migrated (Symfony) Back Office Dashboard** and its new dedicated hook family.
 
-It is both living documentation of the integration contract and a validation vehicle: once installed with the `dashboard` feature flag enabled, it renders content in Zone One, Zone Two and the toolbar area of the new dashboard page.
+It is both living documentation of the integration contract and a validation vehicle: once installed with the `dashboard` feature flag enabled, it renders content in every zone of the new dashboard page, including four Chart.js charts (doughnut, line, bar, polar area).
 
 ## What it demonstrates
 
 - Registering on the **new** dashboard hooks: `displayAdminDashboardZoneOne`, `displayAdminDashboardZoneTwo`, `displayAdminDashboardZoneThree`, `displayAdminDashboardTop`, `displayAdminDashboardBottom`, `displayAdminDashboardToolbar`.
 - Rendering hook content through **module Twig templates** (`views/templates/admin/*.html.twig`) — no Smarty, no `HelperForm`, no `Db::getInstance()`.
 - Passing and using hook **parameters** (`date_from` / `date_to`, the employee stats date range).
-- Loading the module's **own CSS/JS assets from its hook output** (see `toolbar.html.twig`) — no `actionAdminControllerSetMedia`, no `get_class($this->context->controller)` detection.
+- Rendering charts with the **core-provided Chart.js** and its **PrestaShop palette** (see below) — the module ships no charting library.
+- Presenting each block as a **Bootstrap card** (`card` / `card-header` / `card-body`), the supported markup of the new Back Office theme.
+- Loading the module's **own CSS/JS assets from its hook output** — no `actionAdminControllerSetMedia`, no `get_class($this->context->controller)` detection. Each hook template loads only what its own blocks need, so every hook keeps working when the others are unregistered.
 
 ## Requirements
 
-- PrestaShop **9.2.0** or later (the version that introduces the migrated dashboard and its hooks).
-- The **`dashboard` feature flag** enabled: *Advanced Parameters > New & Experimental Features > Dashboard page*.
+- PrestaShop **9.2.0** or later (the version that introduces the migrated dashboard, its hooks and the core Chart.js bundle).
+- The **`dashboard` feature flag** enabled: *Advanced Parameters > New & Experimental Features > Dashboard*.
 
 ## Install
 
@@ -23,7 +25,21 @@ It is both living documentation of the integration contract and a validation veh
 php bin/console prestashop:module install dashexample
 ```
 
-Then enable the `dashboard` feature flag and open the Dashboard. You should see the module's blocks in the two zones and a marker in the toolbar area.
+Then enable the `dashboard` feature flag and open the Dashboard. You should see the module's cards in every zone (four charts across the three columns) and a marker in the toolbar area.
+
+## Charts with the core-provided Chart.js
+
+The dashboard page loads **Chart.js v4** as an independent core bundle (`themes/new-theme/public/chartjs.bundle.js`) — only on that page, not in the main Back Office bundle. It exposes two globals:
+
+- **`Chart`** — the Chart.js entry point ([chartjs.org](https://www.chartjs.org)).
+- **`psChart`** — the PrestaShop palette, mirroring the modern PrestaShop branding (the `.b-color-*` blocks of prestashop.com, one named color per `--color-N`), read from the design-kit tokens (`--cdk-*` CSS custom properties) where they exist:
+  - `psChart.colors` — named colors, in prestashop.com order: `white`, `black`, `blue`, `green`, `purple`, `yellow`, `lightGray`, `gray`, `paleGray`, `teal`, `lightBlue`, `midGray`, `offWhite`, `borderGray` (`teal` and `gray` are the darker accents to prefer for line strokes);
+  - `psChart.series` — the categorical ramp as an ordered array for multi-series charts: `green`, `teal`, `blue`, `yellow`, `gray`, `purple` (the brand pastels interleaved with the darker accents so adjacent series stay distinguishable for color-blind readers);
+  - `psChart.withAlpha(color, alpha)` — translucent variant of a color, e.g. for line-chart area fills.
+
+A chart whose datasets define **no color at all** is colored automatically with the PrestaShop palette (the core replaces the default Chart.js `colors` plugin) — see the Zone One doughnut. A chart that defines **any** color is left untouched, so pick every color from `psChart` explicitly when some series need a specific meaning — see the Zone Two line chart (previous period in neutral gray) and bar chart.
+
+Keep legends and tooltips enabled (Chart.js defaults) so series identity never relies on color alone, and give each `<canvas>` a `role="img"` and an `aria-label` — canvases are invisible to screen readers.
 
 ## New vs legacy hook families
 
@@ -82,10 +98,11 @@ This module registers **only the new hooks** on purpose, so it also serves as a 
 | File | Role |
 |---|---|
 | `dashexample.php` | Module class: hook registration + hook callbacks rendering Twig |
-| `views/templates/admin/zone_one.html.twig` | Zone One block |
-| `views/templates/admin/zone_two.html.twig` | Zone Two block |
-| `views/templates/admin/zone_three.html.twig` | Zone Three block |
-| `views/templates/admin/top.html.twig` | Top area block |
-| `views/templates/admin/bottom.html.twig` | Full-width bottom block |
-| `views/templates/admin/toolbar.html.twig` | Toolbar block + asset loading |
-| `views/css/dashexample.css`, `views/js/dashexample.js` | Module-owned assets |
+| `views/templates/admin/zone_one.html.twig` | Zone One card: traffic-sources doughnut (auto-colored) |
+| `views/templates/admin/zone_two.html.twig` | Zone Two cards: sales-trend line + monthly-goals bar (explicit palette tokens) |
+| `views/templates/admin/zone_three.html.twig` | Zone Three card: orders-by-status polar area (auto-colored) |
+| `views/templates/admin/top.html.twig` | Top area banner |
+| `views/templates/admin/bottom.html.twig` | Full-width bottom card |
+| `views/templates/admin/toolbar.html.twig` | Toolbar marker badge |
+| `views/js/zone-one.js`, `views/js/zone-two.js`, `views/js/zone-three.js` | Per-zone chart initialization (each loaded by its own hook template) |
+| `views/css/dashexample.css` | Module-owned styles |

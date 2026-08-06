@@ -8,17 +8,52 @@
 
 {% trans_default_domain 'Module.Dashexample.Admin' %}
 
-<div class="panel dashexample-card">
-  <h3 class="panel-heading">
-    <span class="material-icons">insights</span>
-    {{ 'Zone two'|trans }}
-  </h3>
-  <div class="panel-body">
-    <p>{{ 'This block is rendered by the dashexample module through the displayAdminDashboardZoneTwo hook.'|trans }}</p>
-    <ul class="mb-0">
-      <li>{{ 'Rendered with a module Twig template (no Smarty).'|trans }}</li>
-      <li>{{ 'No HelperForm, no Db::getInstance().'|trans }}</li>
-      <li>{{ 'Range received as hook parameters: %from% → %to%.'|trans({'%from%': dateFrom, '%to%': dateTo}) }}</li>
-    </ul>
+{# Every hook template loads the assets its own blocks need, so each hook keeps
+   working when the others are unregistered. #}
+<link rel="stylesheet" href="{{ moduleUri }}views/css/dashexample.css">
+<script src="{{ moduleUri }}views/js/zone-two.js" defer></script>
+
+<div class="card dashexample-card">
+  <div class="card-header">
+    <h3 class="card-header-title">
+      <i class="material-icons">show_chart</i>
+      {{ 'Sales trend'|trans }}
+    </h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted">
+      {{ 'Line chart with a previous-period overlay, colored with explicit tokens from the core psChart palette.'|trans }}
+    </p>
+    <canvas id="dashexample-line" height="140" role="img" aria-label="{{ 'Sales trend, current vs previous period'|trans }}"></canvas>
+    <script type="application/json" id="dashexample-line-data">
+      {
+        "labels": ["D-13", "D-12", "D-11", "D-10", "D-9", "D-8", "D-7", "D-6", "D-5", "D-4", "D-3", "D-2", "D-1", "D-0"],
+        "current": [420, 460, 510, 495, 530, 610, 590, 640, 605, 655, 700, 690, 730, 760],
+        "previous": [380, 400, 430, 445, 460, 500, 505, 520, 540, 560, 580, 600, 610, 630]
+      }
+    </script>
+  </div>
+  <div class="card-footer text-muted">
+    {{ 'Selected range: %from% → %to%'|trans({'%from%': dateFrom, '%to%': dateTo}) }}
+  </div>
+</div>
+
+<div class="card dashexample-card">
+  <div class="card-header">
+    <h3 class="card-header-title">
+      <i class="material-icons">bar_chart</i>
+      {{ 'Monthly goals'|trans }}
+    </h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted">{{ 'Goals-vs-actual bar chart, also colored from the core psChart palette.'|trans }}</p>
+    <canvas id="dashexample-bar" height="160" role="img" aria-label="{{ 'Monthly goals versus actual performance'|trans }}"></canvas>
+    <script type="application/json" id="dashexample-bar-data">
+      {
+        "labels": ["Traffic", "Conversion rate", "Avg. cart value", "Sales"],
+        "goal": [100, 100, 100, 100],
+        "actual": [92, 108, 97, 115]
+      }
+    </script>
   </div>
 </div>
