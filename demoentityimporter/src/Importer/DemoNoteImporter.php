@@ -56,16 +56,16 @@ use Throwable;
  * See PrestaShop\PrestaShop\Core\Import\Engine\EntityImporter\ProductImporter
  * in the core for the full-scale reference implementation.
  */
-final class DemoNoteImporter extends AbstractEntityImporter
+class DemoNoteImporter extends AbstractEntityImporter
 {
     public const ENTITY_TYPE = 'demo_note';
 
-    private const NOTE_MAX_LENGTH = 255;
+    protected const NOTE_MAX_LENGTH = 255;
 
     public function __construct(
         ResumableFileReaderInterface $fileReader,
         RowMapper $rowMapper,
-        private readonly EntityManagerInterface $entityManager,
+        protected readonly EntityManagerInterface $entityManager,
     ) {
         parent::__construct($fileReader, $rowMapper);
     }
@@ -137,7 +137,7 @@ final class DemoNoteImporter extends AbstractEntityImporter
     /**
      * @param array<string, string> $row mapped row values
      */
-    private function importRow(array $row): void
+    protected function importRow(array $row): void
     {
         $note = null;
         $id = $row['id'] ?? '';
@@ -155,7 +155,7 @@ final class DemoNoteImporter extends AbstractEntityImporter
         $this->entityManager->flush();
     }
 
-    private function message(string $severity, string $phase, string $text, int $rowIndex): ImportMessage
+    protected function message(string $severity, string $phase, string $text, int $rowIndex): ImportMessage
     {
         return new ImportMessage($severity, $phase, $text, $rowIndex, 'note');
     }
