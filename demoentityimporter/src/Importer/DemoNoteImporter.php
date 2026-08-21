@@ -53,6 +53,13 @@ use Throwable;
  * - ResumableFileReaderInterface and RowMapper are core services injected
  *   as-is.
  *
+ * Note for importers that build a PhaseBatchResult themselves instead of
+ * returning iterateBatch(): all four constructor arguments are required, and a
+ * batch that consumed nothing must hand back the cursor it was given
+ * ($context->getResumeCursor()). Returning a fresh result without it would
+ * rewind the reader to the start of the file while the phase offset stayed put,
+ * re-importing rows under the wrong indexes.
+ *
  * See PrestaShop\PrestaShop\Core\Import\Engine\EntityImporter\ProductImporter
  * in the core for the full-scale reference implementation.
  */
@@ -82,9 +89,14 @@ class DemoNoteImporter extends AbstractEntityImporter
 
     public function getFields(): EntityFieldCollectionInterface
     {
+        // no field is flagged "required": that EntityField flag is deprecated
+        // and never enforced anything server-side. Required values are checked
+        // PER ROW instead, in the validation phase below, because a value is
+        // only mandatory when the row CREATES an entity and one file can create
+        // and update
         return EntityFieldCollection::createFromArray([
             new EntityField('id', 'ID'),
-            new EntityField('note', 'Note', '', true),
+            new EntityField('note', 'Note'),
         ]);
     }
 

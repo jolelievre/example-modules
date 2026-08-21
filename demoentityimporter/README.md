@@ -1,6 +1,6 @@
 # Demo: register a custom entity importer
 
-This module shows how a PrestaShop 9.2+ module plugs its own entity importer
+This module shows how a PrestaShop 9.3+ module plugs its own entity importer
 into the core import engine (Advanced Parameters > Import) — and actually
 imports something: each CSV row becomes a `DemoNote` Doctrine entity.
 
@@ -63,4 +63,4 @@ then install the module (BO module manager or `php bin/console prestashop:module
 
 ## Requirements
 
-- PrestaShop 9.2.0 or newer (import engine introduced by [PrestaShop/PrestaShop#41907](https://github.com/PrestaShop/PrestaShop/issues/41907)).
+- PrestaShop 9.3.0 or newer (import engine introduced by [PrestaShop/PrestaShop#41907](https://github.com/PrestaShop/PrestaShop/issues/41907)).

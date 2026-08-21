@@ -31,7 +31,7 @@ class DemoEntityImporter extends Module
         $this->name = 'demoentityimporter';
         $this->author = 'PrestaShop';
         $this->version = '1.0.0';
-        $this->ps_versions_compliancy = ['min' => '9.2.0', 'max' => '9.99.99'];
+        $this->ps_versions_compliancy = ['min' => '9.3.0', 'max' => '9.99.99'];
 
         parent::__construct();
 
