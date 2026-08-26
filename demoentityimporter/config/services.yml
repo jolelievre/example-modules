@@ -1,0 +1,10 @@
+services:
+  _defaults:
+    public: true
+    autowire: true
+    # autoconfigure is what gets the service automatically tagged as an
+    # entity importer (the core registers the tag for every autoconfigured
+    # service implementing EntityImporterInterface)
+    autoconfigure: true
+
+  PrestaShop\Module\DemoEntityImporter\Importer\DemoNoteImporter: ~
