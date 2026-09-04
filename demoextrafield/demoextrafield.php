@@ -503,6 +503,120 @@ class demoextrafield extends Module
             return false;
         }
 
+        /**
+         * CART extra field — the cart is a COMMON-only entity: it has no cart_lang /
+         * cart_shop base table (its id_lang / id_shop are plain columns), so LANG and
+         * SHOP scopes are rejected at registration. No form/grid/API placements exist
+         * for the cart either; the value is written by a hook and displayed on checkout.
+         */
+
+        // Cart (common) : delivery_note
+        $cartDeliveryNoteRegistered = $this->registerExtraProperty(
+            new ExtraPropertyDefinition(
+                entityName: 'cart',
+                propertyName: 'delivery_note',
+                type: ExtraPropertyType::STRING,
+                scope: ExtraPropertyScope::COMMON,
+                nullable: true,
+                displayFront: true,
+                formType: TextareaType::class,
+                labelWording: 'Delivery note',
+                labelDomain: self::TRANSLATION_DOMAIN,
+                descriptionWording: 'Delivery instructions attached to the cart during checkout',
+                descriptionDomain: self::TRANSLATION_DOMAIN,
+            )
+        );
+        if (!$cartDeliveryNoteRegistered) {
+            $this->_errors[] = $this->trans('Failed to register Cart extra field "delivery_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
+
+            return false;
+        }
+
+        /**
+         * ORDER extra field — registered with the natural entity name 'order': the core
+         * resolves the physical table ('orders') and the primary key ('id_order') from
+         * the Order ObjectModel. COMMON is the only supported scope (no orders_lang /
+         * orders_shop tables). Deliberately NO order-grid placement: the order grid uses
+         * id-first pagination, which the generic grid integration cannot join yet (core
+         * issue #42536) — the column would render empty.
+         */
+
+        // Order (common) : delivery_note — filled from the cart's note at order validation.
+        $orderDeliveryNoteRegistered = $this->registerExtraProperty(
+            new ExtraPropertyDefinition(
+                entityName: 'order',
+                propertyName: 'delivery_note',
+                type: ExtraPropertyType::STRING,
+                scope: ExtraPropertyScope::COMMON,
+                nullable: true,
+                displayFront: true,
+                formType: TextareaType::class,
+                labelWording: 'Delivery note (copied from the cart)',
+                labelDomain: self::TRANSLATION_DOMAIN,
+                descriptionWording: 'Delivery instructions copied from the cart when the order is validated',
+                descriptionDomain: self::TRANSLATION_DOMAIN,
+            )
+        );
+        if (!$orderDeliveryNoteRegistered) {
+            $this->_errors[] = $this->trans('Failed to register Order extra field "delivery_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
+
+            return false;
+        }
+
+        /**
+         * COMBINATION extra fields — registered with the natural entity name
+         * 'combination' (the 'Combination'/'product_attribute'/'ProductAttribute'
+         * spellings work identically): the core resolves the physical table
+         * ('product_attribute') and the primary key ('id_product_attribute'). All three
+         * scopes are available (product_attribute_lang / product_attribute_shop exist).
+         */
+
+        // Combination (common) : ean_verified — exposed on the combinations API list.
+        $combinationEanVerifiedRegistered = $this->registerExtraProperty(
+            new ExtraPropertyDefinition(
+                entityName: 'combination',
+                propertyName: 'ean_verified',
+                type: ExtraPropertyType::BOOL,
+                scope: ExtraPropertyScope::COMMON,
+                defaultValue: false,
+                nullable: false,
+                displayFront: true,
+                associatedApis: ['/products/{productId}/combinations'],
+                formType: SwitchType::class,
+                labelWording: 'EAN verified',
+                labelDomain: self::TRANSLATION_DOMAIN,
+                descriptionWording: 'Whether the combination EAN has been verified by the merchant',
+                descriptionDomain: self::TRANSLATION_DOMAIN,
+            )
+        );
+        if (!$combinationEanVerifiedRegistered) {
+            $this->_errors[] = $this->trans('Failed to register Combination extra field "ean_verified" (scope: common).', [], 'Modules.Demoextrafield.Admin');
+
+            return false;
+        }
+
+        // Combination (shop) : restock_note — one value per store.
+        $combinationRestockNoteRegistered = $this->registerExtraProperty(
+            new ExtraPropertyDefinition(
+                entityName: 'combination',
+                propertyName: 'restock_note',
+                type: ExtraPropertyType::STRING,
+                scope: ExtraPropertyScope::SHOP,
+                nullable: true,
+                displayFront: false,
+                formType: TextareaType::class,
+                labelWording: 'Restock note (per store)',
+                labelDomain: self::TRANSLATION_DOMAIN,
+                descriptionWording: 'Internal restocking note, stored per store',
+                descriptionDomain: self::TRANSLATION_DOMAIN,
+            )
+        );
+        if (!$combinationRestockNoteRegistered) {
+            $this->_errors[] = $this->trans('Failed to register Combination extra field "restock_note" (scope: shop).', [], 'Modules.Demoextrafield.Admin');
+
+            return false;
+        }
+
         $hooksRegistered = $this->registerHook('displayProductAdditionalInfo')
             && $this->registerHook('displayCartExtraProductInfo')
             && $this->registerHook('displayHeaderCategory')
@@ -512,7 +626,11 @@ class demoextrafield extends Module
             && $this->registerHook('actionCmsPageFormDataProviderData')
             && $this->registerHook('actionAfterCreateCmsPageFormHandler')
             && $this->registerHook('actionAfterUpdateCmsPageFormHandler')
-            && $this->registerHook('displayCMSDisputeInformation');
+            && $this->registerHook('displayCMSDisputeInformation')
+            && $this->registerHook('displayCheckoutSummaryTop')
+            && $this->registerHook('actionCartSave')
+            && $this->registerHook('actionValidateOrder')
+            && $this->registerHook('displayOrderDetail');
         if (!$hooksRegistered) {
             $this->_errors[] = $this->trans('Failed to register one or more hooks.', [], 'Modules.Demoextrafield.Admin');
 
@@ -554,6 +672,11 @@ class demoextrafield extends Module
             && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'promo_banner'), $dropColumn)
             && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'revision_code'), $dropColumn)
 
+            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cart', 'delivery_note'), $dropColumn)
+            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('order', 'delivery_note'), $dropColumn)
+            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'ean_verified'), $dropColumn)
+            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'restock_note'), $dropColumn)
+
             && $this->unregisterHook('displayProductAdditionalInfo')
             && $this->unregisterHook('displayCartExtraProductInfo')
             && $this->unregisterHook('displayHeaderCategory')
@@ -564,6 +687,10 @@ class demoextrafield extends Module
             && $this->unregisterHook('actionAfterCreateCmsPageFormHandler')
             && $this->unregisterHook('actionAfterUpdateCmsPageFormHandler')
             && $this->unregisterHook('displayCMSDisputeInformation')
+            && $this->unregisterHook('displayCheckoutSummaryTop')
+            && $this->unregisterHook('actionCartSave')
+            && $this->unregisterHook('actionValidateOrder')
+            && $this->unregisterHook('displayOrderDetail')
 
             && parent::uninstall();
     }
@@ -675,6 +802,99 @@ class demoextrafield extends Module
     }
 
     /**
+     * Action hook — fires on every cart save.
+     *
+     * Demo of the CART extra field write path: seeds the delivery_note the first time the
+     * cart is persisted (a real module would set it from a checkout form field). Writing
+     * through $cart->update() re-triggers actionCartSave, hence the re-entrancy guard.
+     */
+    public function hookActionCartSave(): void
+    {
+        static $seeding = false;
+        if ($seeding) {
+            return;
+        }
+
+        $cart = $this->context->cart;
+        if (!Validate::isLoadedObject($cart)) {
+            return;
+        }
+
+        $existingNote = $cart->extra_properties['demoextrafield']['delivery_note'];
+        if (is_string($existingNote) && '' !== $existingNote) {
+            return;
+        }
+
+        $seeding = true;
+        try {
+            $cart->extra_properties['demoextrafield']['delivery_note'] = sprintf(
+                'Leave the parcel at the pickup point (demo note seeded on %s).',
+                date('Y-m-d H:i')
+            );
+            $cart->update();
+        } finally {
+            $seeding = false;
+        }
+    }
+
+    /**
+     * Front Office hook (checkout / cart summary).
+     *
+     * Displays the cart delivery_note read through the presented cart: `$cart` is a Smarty
+     * global on every FO page (a CartLazyArray), and the extra properties are exposed under
+     * its `extra_properties` key — snake_case, like every Smarty surface (the camelCase
+     * `extraProperties` spelling belongs to the Admin API JSON only).
+     */
+    public function hookDisplayCheckoutSummaryTop(array $params): string
+    {
+        return $this->display(__FILE__, 'views/templates/hook/checkout_summary_top.tpl');
+    }
+
+    /**
+     * Action hook — fires when an order is validated.
+     *
+     * The cart dies at the end of checkout (its cookie is dropped once the order exists),
+     * so a cart-level value that must stay visible after the purchase has to be copied
+     * onto the order. This is the intended pattern: the module owns the copy.
+     *
+     * Also a live demo of the entity-name resolution: the definition was registered as
+     * 'order' while the ObjectModel writes through its physical table 'orders' /
+     * primary key 'id_order'.
+     */
+    public function hookActionValidateOrder(array $params): void
+    {
+        $cart = $params['cart'] ?? null;
+        $order = $params['order'] ?? null;
+        if (!$cart instanceof Cart || !$order instanceof Order || (int) $order->id <= 0) {
+            return;
+        }
+
+        $deliveryNote = $cart->extra_properties['demoextrafield']['delivery_note'];
+        if (!is_string($deliveryNote) || '' === $deliveryNote) {
+            return;
+        }
+
+        $order->extra_properties['demoextrafield']['delivery_note'] = $deliveryNote;
+        $order->update();
+    }
+
+    /**
+     * Front Office hook (order detail page, customer account).
+     * Displays the order's extra fields (e.g. the delivery_note copied from the cart).
+     */
+    public function hookDisplayOrderDetail(array $params): string
+    {
+        $order = $params['order'] ?? null;
+        if (!$order instanceof Order || (int) $order->id <= 0) {
+            return '';
+        }
+
+        $this->context->smarty->assign('orderObjectModel', $order);
+
+        return $this->display(__FILE__, 'views/templates/hook/order_detail.tpl');
+    }
+
+    /**
      * Front Office hook (customer my-account page).
      *
      * Demonstrates that an ObjectModel instance can be handed to Smarty as-is: the template
@@ -695,6 +915,18 @@ class demoextrafield extends Module
         $customer = $this->context->customer;
         if (null === $customer || (int) $customer->id <= 0) {
             return '';
+        }
+
+        // JSON showcase: write a real PHP structure — the writer json_encodes it for
+        // storage, the constraint (Assert\Json) validates the encoded string, and reads
+        // give the decoded structure back (iterable in the template below).
+        $extraJson = $customer->extra_properties['demoextrafield']['extra_json'];
+        if (empty($extraJson)) {
+            $customer->extra_properties['demoextrafield']['extra_json'] = [
+                'loyalty' => ['points' => 0, 'tier' => 'bronze'],
+                'preferences' => ['newsletter' => true],
+            ];
+            $customer->update();
         }
 
         $this->context->smarty->assign('customerObjectModel', $customer);
