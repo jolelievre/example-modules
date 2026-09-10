@@ -38,54 +38,6 @@
         <source>Delivery note</source>
         <target>Note de livraison</target>
       </trans-unit>
-      <trans-unit id="d1dc7ec8f692947daaba98abda6a04c4">
-        <source>Failed to register Address extra field "delivery_note" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Adresse "delivery_note" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="8fdf2794a133cb2c3b26ed84b30287a9">
-        <source>Failed to register Category extra field "id_supplier" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Catégorie "id_supplier" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="1dab92a82d758be050f1a66d06af18f5">
-        <source>Failed to register Category extra field "marketing_note" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Catégorie "marketing_note" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="ae791f086aa1701cdb352fb279db4090">
-        <source>Failed to register Category extra field "theme_color" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Catégorie "theme_color" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="747e6181f397afc583ff2608a688e66d">
-        <source>Failed to register Customer extra field "credit_limit" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Client "credit_limit" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="6d4ae3e9f8bdeb310f04a151470f408a">
-        <source>Failed to register Customer extra field "extra_json" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Client "extra_json" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="a9e0080f580907c2ab36758aeff7de66">
-        <source>Failed to register Customer extra field "internal_note" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Client "internal_note" (portée : common).</target>
-      </trans-unit>
-      <trans-unit id="9a937301db66ddf710501ae2a6c464eb">
-        <source>Failed to register Product extra field "custom_date" (scope: shop).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Produit "custom_date" (portée : shop).</target>
-      </trans-unit>
-      <trans-unit id="946f3493f1d4fbbaaa435df3172be3c5">
-        <source>Failed to register Product extra field "date_last_seen" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Produit "date_last_seen" (portée : shop).</target>
-      </trans-unit>
-      <trans-unit id="33c1b565706cecf8eef383ca223fb5ae">
-        <source>Failed to register Product extra field "is_dangerous" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Produit "is_dangerous" (portée : shop).</target>
-      </trans-unit>
-      <trans-unit id="39333c5fecd5ae1cd163d55b53f89936">
-        <source>Failed to register Product extra field "packaging_type" (scope: common).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Produit "packaging_type" (portée : shop).</target>
-      </trans-unit>
-      <trans-unit id="9a566dc8c34252df0532121b7e898b69">
-        <source>Failed to register Product extra field "video_link" (scope: lang).</source>
-        <target>Échec de l’enregistrement du champ supplémentaire Produit "video_link" (portée : lang).</target>
-      </trans-unit>
       <trans-unit id="914148f4423e573bb61044ff8301538c">
         <source>Failed to register one or more hooks.</source>
         <target>Échec de l’enregistrement d’un ou plusieurs hooks.</target>

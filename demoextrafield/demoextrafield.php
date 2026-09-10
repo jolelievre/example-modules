@@ -68,12 +68,16 @@ class demoextrafield extends Module
             return false;
         }
 
+        // Registering an extra property returns true or throws ExtraPropertyException: there is no
+        // false to test (see Module::registerExtraProperty()). A refused definition therefore fails
+        // the module install with the reason carried by the exception.
+
         /**
          * PRODUCT extra fields
          */
 
         // Product (common) : is_dangerous
-        $productDangerousRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'product',
                 propertyName: 'is_dangerous',
@@ -93,14 +97,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$productDangerousRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Product extra field "is_dangerous" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Product (lang) : video_link
-        $productVideoLinkRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'product',
                 propertyName: 'video_link',
@@ -125,14 +124,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$productVideoLinkRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Product extra field "video_link" (scope: lang).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Product (shop) : custom_date
-        $productCustomDateRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'product',
                 propertyName: 'custom_date',
@@ -152,16 +146,11 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$productCustomDateRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Product extra field "custom_date" (scope: shop).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Product (common) : date_last_seen
         // Auto-updated on each FO product page view (hookDisplayFooterProduct).
         // displayForm: false → read-only for merchants; visible in the product grid and via API.
-        $productDateLastSeenRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'product',
                 propertyName: 'date_last_seen',
@@ -177,11 +166,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$productDateLastSeenRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Product extra field "date_last_seen" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Product (common) : packaging_type
         // Demonstrates: CHOICE type, enumValues, formOptions (dropdown choices).
@@ -189,7 +173,7 @@ class demoextrafield extends Module
         // required: false + nullable: true + placeholder → the "—" option represents "no selection";
         // the field can be left empty and the empty value passes server-side validation.
         // (For a truly required field, omit the placeholder and add new Assert\NotBlank() to constraints.)
-        $productPackagingTypeRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'product',
                 propertyName: 'packaging_type',
@@ -218,11 +202,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$productPackagingTypeRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Product extra field "packaging_type" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * CATEGORY extra fields
@@ -234,7 +213,7 @@ class demoextrafield extends Module
         // form modifier no longer adds NotBlank automatically). Assert\CssColor replaces the legacy
         // isColor validator. Constraints are real Symfony Constraint objects passed directly here —
         // not in formOptions (which is JSON-persisted and cannot hold Constraint objects).
-        $categoryThemeColorRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'category',
                 propertyName: 'theme_color',
@@ -254,17 +233,12 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN
             )
         );
-        if (!$categoryThemeColorRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Category extra field "theme_color" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Category (common) : marketing_note
         // Demonstrates: displayFront: false on an entity rendered through a presenter LazyArray
         // (CategoryLazyArray) — validates that the forFrontOffice filtering works on that path
         // too (the customer's internal_note covers the native ObjectModel path).
-        $categoryMarketingNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'category',
                 propertyName: 'marketing_note',
@@ -282,14 +256,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$categoryMarketingNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Category extra field "marketing_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Category (common) : id_supplier
-        $categorySupplierRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'category',
                 propertyName: 'id_supplier',
@@ -312,18 +281,13 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN
             )
         );
-        if (!$categorySupplierRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Category extra field "id_supplier" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * CUSTOMER extra fields
          */
 
         // Customer (common) : credit_limit
-        $customerCreditLimitRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'customer',
                 propertyName: 'credit_limit',
@@ -342,14 +306,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN
             )
         );
-        if (!$customerCreditLimitRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Customer extra field "credit_limit" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Customer (common) : extra_json
-        $customerExtraJsonRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'customer',
                 propertyName: 'extra_json',
@@ -367,18 +326,13 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$customerExtraJsonRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Customer extra field "extra_json" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Customer (common) : internal_note
         // Demonstrates: displayFront: false — the field appears in BO form and API but is
         // never readable on the front office: presenter lazy arrays are built with
         // forFrontOffice: true, and native ObjectModel bags detect the FO controller
         // context automatically, so non-displayFront definitions are never even read.
-        $customerInternalNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'customer',
                 propertyName: 'internal_note',
@@ -395,11 +349,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$customerInternalNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Customer extra field "internal_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * ADDRESS extra fields
@@ -420,7 +369,7 @@ class demoextrafield extends Module
 
         // Address (common) : delivery_note
         // Shows in the manufacturer address grid (Catalog > Brands > Addresses) after 'city'.
-        $addressDeliveryNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'address',
                 propertyName: 'delivery_note',
@@ -440,11 +389,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$addressDeliveryNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Address extra field "delivery_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * CMS extra fields — MANUAL form integration (no associatedForms)
@@ -460,7 +404,7 @@ class demoextrafield extends Module
          */
 
         // CMS (lang) : promo_banner
-        $cmsPromoBannerRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'cms',
                 propertyName: 'promo_banner',
@@ -475,14 +419,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$cmsPromoBannerRegistered) {
-            $this->_errors[] = $this->trans('Failed to register CMS extra field "promo_banner" (scope: lang).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // CMS (common) : revision_code
-        $cmsRevisionCodeRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'cms',
                 propertyName: 'revision_code',
@@ -497,11 +436,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$cmsRevisionCodeRegistered) {
-            $this->_errors[] = $this->trans('Failed to register CMS extra field "revision_code" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * CART extra field — the cart is a COMMON-only entity: it has no cart_lang /
@@ -511,7 +445,7 @@ class demoextrafield extends Module
          */
 
         // Cart (common) : delivery_note
-        $cartDeliveryNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'cart',
                 propertyName: 'delivery_note',
@@ -526,11 +460,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$cartDeliveryNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Cart extra field "delivery_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * ORDER extra field — registered with the natural entity name 'order': the core
@@ -542,7 +471,7 @@ class demoextrafield extends Module
          */
 
         // Order (common) : delivery_note — filled from the cart's note at order validation.
-        $orderDeliveryNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'order',
                 propertyName: 'delivery_note',
@@ -557,11 +486,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$orderDeliveryNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Order extra field "delivery_note" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         /**
          * COMBINATION extra fields — registered with the natural entity name
@@ -572,7 +496,7 @@ class demoextrafield extends Module
          */
 
         // Combination (common) : ean_verified — exposed on the combinations API list.
-        $combinationEanVerifiedRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'combination',
                 propertyName: 'ean_verified',
@@ -589,14 +513,9 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$combinationEanVerifiedRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Combination extra field "ean_verified" (scope: common).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         // Combination (shop) : restock_note — one value per store.
-        $combinationRestockNoteRegistered = $this->registerExtraProperty(
+        $this->registerExtraProperty(
             new ExtraPropertyDefinition(
                 entityName: 'combination',
                 propertyName: 'restock_note',
@@ -611,11 +530,6 @@ class demoextrafield extends Module
                 descriptionDomain: self::TRANSLATION_DOMAIN,
             )
         );
-        if (!$combinationRestockNoteRegistered) {
-            $this->_errors[] = $this->trans('Failed to register Combination extra field "restock_note" (scope: shop).', [], 'Modules.Demoextrafield.Admin');
-
-            return false;
-        }
 
         $hooksRegistered = $this->registerHook('displayProductAdditionalInfo')
             && $this->registerHook('displayCartExtraProductInfo')
@@ -651,33 +565,32 @@ class demoextrafield extends Module
         // false = keep columns in DB after uninstall
         $dropColumn = false;
 
-        return
-            // Scope is not needed to identify a definition: (entity, module, property) is unique across scopes.
-            $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'video_link'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'is_dangerous'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'custom_date'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'date_last_seen'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'packaging_type'), $dropColumn)
+        // Scope is not needed to identify a definition: (entity, module, property) is unique across scopes.
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'video_link'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'is_dangerous'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'custom_date'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'date_last_seen'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('product', 'packaging_type'), $dropColumn);
 
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'theme_color'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'marketing_note'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'id_supplier'), $dropColumn)
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'theme_color'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'marketing_note'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('category', 'id_supplier'), $dropColumn);
 
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'credit_limit'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'extra_json'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'internal_note'), $dropColumn)
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'credit_limit'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'extra_json'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('customer', 'internal_note'), $dropColumn);
 
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('address', 'delivery_note'), $dropColumn)
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('address', 'delivery_note'), $dropColumn);
 
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'promo_banner'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'revision_code'), $dropColumn)
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'promo_banner'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('cms', 'revision_code'), $dropColumn);
 
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('cart', 'delivery_note'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('order', 'delivery_note'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'ean_verified'), $dropColumn)
-            && $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'restock_note'), $dropColumn)
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('cart', 'delivery_note'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('order', 'delivery_note'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'ean_verified'), $dropColumn);
+        $this->unregisterExtraProperty(new ExtraPropertyDefinition('combination', 'restock_note'), $dropColumn);
 
-            && $this->unregisterHook('displayProductAdditionalInfo')
+        return $this->unregisterHook('displayProductAdditionalInfo')
             && $this->unregisterHook('displayCartExtraProductInfo')
             && $this->unregisterHook('displayHeaderCategory')
             && $this->unregisterHook('displayCustomerAccountTop')
